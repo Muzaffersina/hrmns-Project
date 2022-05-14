@@ -48,32 +48,32 @@ public class EmployerManager implements EmployerService {
 	public Result add(CreateEmployerRequest createEmployerRequest) {
 
 		checkIfEmailExists(createEmployerRequest.getEmail());
-		
+
 		Employer employer = this.modelMapperService.forDto().map(createEmployerRequest, Employer.class);
 		employer.setRole("employer");
-		
+
 		this.employerDao.save(employer);
 		validateEmail(employer.getId(), true);
-		
+
 		return new SuccessResult("Created Employer");
 	}
 
 	@Override
 	public Result delete(DeleteEmployerRequest deleteEmployerRequest) {
-		
+
 		checkIfEmployerExists(deleteEmployerRequest.getEmployerId());
-		
+
 		this.employerDao.deleteById(deleteEmployerRequest.getEmployerId());
-		
+
 		return new SuccessResult("Deleted Employer");
 	}
 
 	@Override
 	public Result update(UpdateEmployerRequest updateEmployerRequest) {
-		
+
 		checkIfEmployerExists(updateEmployerRequest.getEmployerId());
-		
-		return null;
+
+		return new SuccessResult("Updated Employer");
 	}
 
 	@Override
@@ -89,22 +89,30 @@ public class EmployerManager implements EmployerService {
 
 	@Override
 	public DataResult<GetListEmployerDto> getByEmployerId(int employerId) {
-		
+
 		checkIfEmployerExists(employerId);
-		
-		Employer employer = this.employerDao.getById(employerId);		
+
+		Employer employer = this.employerDao.getById(employerId);
 		GetListEmployerDto response = this.modelMapperService.forDto().map(employer, GetListEmployerDto.class);
 		return new SuccessDataResult<GetListEmployerDto>(response, "Listed Employer");
-		
+
 	}
-	
+
 	@Override
-	public Result closeJobStatus(int employerId,int jobId) {
-		
-		this.jobService.closeJobStatusByEmployer(employerId,jobId, false);
+	public void validateEmployerId(int id, boolean status) {
+
+		checkIfEmployerExists(id);
+		Employer employer = this.employerDao.getById(id);
+		employer.setSystemWorkerValidate(status);
+		this.employerDao.save(employer);
+	}
+
+	@Override
+	public Result closeJobStatus(int employerId, int jobId) {
+
+		this.jobService.closeJobStatusByEmployer(employerId, jobId, false);
 		return new SuccessResult("This job has been closed");
 	}
-	
 
 	private boolean checkIfEmailExists(String email) {
 
@@ -114,11 +122,11 @@ public class EmployerManager implements EmployerService {
 		throw new BusinessException("This email already exists");
 
 	}
-	
+
 	@Override
 	public boolean checkIfEmployerExists(int employerId) {
-		
-		if(this.employerDao.existsById(employerId)) {
+
+		if (this.employerDao.existsById(employerId)) {
 			return true;
 		}
 		throw new BusinessException("This EmployerId not found.");
@@ -126,14 +134,5 @@ public class EmployerManager implements EmployerService {
 
 	private void validateEmail(int id, boolean status) {
 		this.userService.validateEmail(id, status);
-	}
-
-	@Override
-	public void validateEmployerId(int id, boolean status) {
-		
-		checkIfEmployerExists(id);
-		Employer employer = this.employerDao.getById(id);
-		employer.setSystemWorkerValidate(status);
-		this.employerDao.save(employer);
 	}
 }

@@ -14,6 +14,7 @@ import com.kodlamaio.hrmns.hrmns.business.dtos.GetListPersonDto;
 import com.kodlamaio.hrmns.hrmns.business.requests.create.CreatePersonRequest;
 import com.kodlamaio.hrmns.hrmns.business.requests.delete.DeletePersonRequest;
 import com.kodlamaio.hrmns.hrmns.business.requests.update.UpdatePersonRequest;
+import com.kodlamaio.hrmns.hrmns.core.adapters.mernis.PersonCheckAdapterService;
 import com.kodlamaio.hrmns.hrmns.core.concretes.BusinessException;
 import com.kodlamaio.hrmns.hrmns.core.mapping.ModelMapperService;
 import com.kodlamaio.hrmns.hrmns.core.results.DataResult;
@@ -29,12 +30,15 @@ public class PersonManager implements PersonService {
 	private PersonDao personDao;
 	private ModelMapperService modelMapperService;
 	private UserService userService;
-
+	private PersonCheckAdapterService personCheckAdapterService;
+	
 	@Autowired
-	public PersonManager(PersonDao personDao, ModelMapperService modelMapperService, UserService userService) {
+	public PersonManager(PersonDao personDao, ModelMapperService modelMapperService, UserService userService,
+			PersonCheckAdapterService personCheckAdapterService) {
 		this.personDao = personDao;
 		this.modelMapperService = modelMapperService;
 		this.userService = userService;
+		this.personCheckAdapterService = personCheckAdapterService;
 
 	}
 
@@ -46,6 +50,7 @@ public class PersonManager implements PersonService {
 		checkIfSocialSecurityNumberExists(createPersonRequest.getSocialSecurityNumber());
 
 		Person person = this.modelMapperService.forDto().map(createPersonRequest, Person.class);
+		//checkRealPersonExists(person);
 		person.setRole("person");
 		
 		this.personDao.save(person);
@@ -65,7 +70,7 @@ public class PersonManager implements PersonService {
 	@Override
 	public Result update(UpdatePersonRequest updatePersonRequest) {
 		checkIfPersonExists(updatePersonRequest.getPersonId());
-		return null;
+		return new SuccessResult("Updated Person");
 	}
 
 	@Override
@@ -117,6 +122,14 @@ public class PersonManager implements PersonService {
 			return true;
 		}
 		throw new BusinessException("This Person id not found");
+	}
+	
+	private boolean checkRealPersonExists(Person person) {
+		
+		if(this.personCheckAdapterService.isPersonExist(person).isSuccess()) {
+			return true;
+		}
+		return false;
 	}
 
 }
