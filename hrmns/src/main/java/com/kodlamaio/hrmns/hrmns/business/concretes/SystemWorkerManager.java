@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kodlamaio.hrmns.hrmns.business.abstracts.EmployerService;
-import com.kodlamaio.hrmns.hrmns.business.abstracts.JobService;
+import com.kodlamaio.hrmns.hrmns.business.abstracts.JobAdvertService;
 import com.kodlamaio.hrmns.hrmns.business.abstracts.SystemWorkerService;
 import com.kodlamaio.hrmns.hrmns.business.dtos.GetListSystemWorkerDto;
 import com.kodlamaio.hrmns.hrmns.business.requests.create.CreateSystemWorkerRequest;
@@ -28,7 +28,7 @@ public class SystemWorkerManager implements SystemWorkerService {
 	private SystemWorkerDao systemWorkerDao;
 	private ModelMapperService modelMapperService;
 	private EmployerService employerService;
-	private JobService jobService;
+	private JobAdvertService jobService;
 
 	@Autowired
 	public SystemWorkerManager(SystemWorkerDao systemWorkerDao, ModelMapperService modelMapperService,

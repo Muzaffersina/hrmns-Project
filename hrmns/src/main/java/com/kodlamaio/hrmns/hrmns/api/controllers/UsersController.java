@@ -9,27 +9,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kodlamaio.hrmns.hrmns.business.abstracts.UserService;
-import com.kodlamaio.hrmns.hrmns.business.dtos.GetListUserDto;
+import com.kodlamaio.hrmns.hrmns.business.dtos.GetListUserEntityDto;
 import com.kodlamaio.hrmns.hrmns.core.results.DataResult;
 
 @RestController
 @RequestMapping("/api/userControllers")
-public class UserController {
+public class UsersController {
 	
 	private UserService userService;
 	
 	@Autowired 
-	public UserController(UserService userService) {
+	public UsersController(UserService userService) {
 		this.userService = userService;
 	}
 	
 	@GetMapping("/getAll")
-	public DataResult<List<GetListUserDto>> getAll(){
+	public DataResult<List<GetListUserEntityDto>> getAll(){
 		return this.userService.getAll();
 	}
 	
 	@GetMapping("/getByUserId")
-	public DataResult<GetListUserDto> getByUserId(int userId){
+	public DataResult<GetListUserEntityDto> getByUserId(int userId){
 		return this.userService.getByUserId(userId);
 	}
 }

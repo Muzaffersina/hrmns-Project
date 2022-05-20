@@ -21,12 +21,12 @@ import com.kodlamaio.hrmns.hrmns.core.results.Result;
 
 @RestController
 @RequestMapping("/api/systemWorkers")
-public class SystemWorkerController {
+public class SystemWorkersController {
 
 	private SystemWorkerService systemWorkerService;
 
 	@Autowired
-	public SystemWorkerController(SystemWorkerService systemWorkerService) {
+	public SystemWorkersController(SystemWorkerService systemWorkerService) {
 		this.systemWorkerService = systemWorkerService;
 	}
 
@@ -49,8 +49,9 @@ public class SystemWorkerController {
 	public Result validateEmployerId(int id, boolean status) {
 		return this.systemWorkerService.validateEmployerId(id, status);
 	}
-	@PostMapping("/getBySystemWorkerId")
-	DataResult<GetListSystemWorkerDto> getBySystemWorkerId(int systemWorkerId){
+	
+	@GetMapping("/getBySystemWorkerId")
+	public DataResult<GetListSystemWorkerDto> getBySystemWorkerId(int systemWorkerId){
 		return this.getBySystemWorkerId(systemWorkerId);
 	}
 

@@ -12,37 +12,42 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateJobRequest {
-
+public class UpdateJobAdvertRequest {
 
 	@NotNull
 	@Positive
 	private int id;
-	
+
 	@NotNull
 	private int employerEmployerId;
-	
+
 	@NotNull
-	private String jobPositon;
-	
+	private short jobPositonId;
+
+	@NotNull
+	private short cityId;
+
+	@NotNull
+	private short workingTypeId;
+
+	@NotNull
+	private short workingTimeId;
+
 	@NotNull
 	private String jobInfo;
-	
-	@NotNull
-	private String cityInfo;
-	
+
 	@NotNull
 	private int minExpectedSalary;
-	
+
 	@NotNull
 	private int maxExpectedSalary;
-	
+
 	@NotNull
 	private int numberOfPositions;
-	
+
 	@NotNull
 	private LocalDate createDate;
-	
+
 	@NotNull
 	private LocalDate deadLine;
 }

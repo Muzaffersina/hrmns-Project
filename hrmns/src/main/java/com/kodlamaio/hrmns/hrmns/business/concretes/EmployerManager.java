@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kodlamaio.hrmns.hrmns.business.abstracts.EmployerService;
-import com.kodlamaio.hrmns.hrmns.business.abstracts.JobService;
+import com.kodlamaio.hrmns.hrmns.business.abstracts.JobAdvertService;
 import com.kodlamaio.hrmns.hrmns.business.abstracts.UserService;
 import com.kodlamaio.hrmns.hrmns.business.dtos.GetListEmployerDto;
 import com.kodlamaio.hrmns.hrmns.business.requests.create.CreateEmployerRequest;
@@ -31,12 +31,12 @@ public class EmployerManager implements EmployerService {
 	private EmployerDao employerDao;
 	private ModelMapperService modelMapperService;
 	private UserService userService;
-	private JobService jobService;
+	private JobAdvertService jobService;
 
 	@Autowired
 	@Lazy
 	public EmployerManager(EmployerDao employerDao, ModelMapperService modelMapperService, UserService userService,
-			JobService jobService) {
+			JobAdvertService jobService) {
 		this.employerDao = employerDao;
 		this.modelMapperService = modelMapperService;
 		this.userService = userService;

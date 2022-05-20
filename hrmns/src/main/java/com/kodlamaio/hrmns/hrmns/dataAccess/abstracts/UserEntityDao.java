@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import com.kodlamaio.hrmns.hrmns.entities.UserEntity;
 
 @Repository
-public interface UserDao extends JpaRepository<UserEntity, Integer>{
+public interface UserEntityDao extends JpaRepository<UserEntity, Integer>{
 	
 	UserEntity getByEmail(String email);
 }

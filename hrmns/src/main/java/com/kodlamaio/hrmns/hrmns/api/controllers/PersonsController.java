@@ -21,12 +21,12 @@ import com.kodlamaio.hrmns.hrmns.core.results.Result;
 
 @RestController
 @RequestMapping("/api/persons")
-public class PersonController {
-	
+public class PersonsController {
+
 	private PersonService personService;
-	
+
 	@Autowired
-	public PersonController(PersonService personService) {
+	public PersonsController(PersonService personService) {
 		this.personService = personService;
 	}
 
@@ -34,19 +34,19 @@ public class PersonController {
 	public Result add(@RequestBody @Valid CreatePersonRequest createPersonRequest) {
 		return this.personService.add(createPersonRequest);
 	}
-	
+
 	@DeleteMapping("/delete")
 	public Result add(@RequestBody @Valid DeletePersonRequest deletePersonRequest) {
 		return this.personService.delete(deletePersonRequest);
 	}
-	@PostMapping("/getByPersonId")
-	public DataResult<GetListPersonDto> getByPersonId(int personId){
+
+	@GetMapping("/getByPersonId")
+	public DataResult<GetListPersonDto> getByPersonId(int personId) {
 		return this.personService.getByPersonId(personId);
 	}
-	
-	
+
 	@GetMapping("/getAll")
-	public DataResult<List<GetListPersonDto>> getAll(){
+	public DataResult<List<GetListPersonDto>> getAll() {
 		return this.personService.getAll();
 	}
 }

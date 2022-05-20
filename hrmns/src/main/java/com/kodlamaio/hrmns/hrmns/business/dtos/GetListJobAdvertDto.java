@@ -9,17 +9,21 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetListJobDto {
+public class GetListJobAdvertDto {
 	
 	private int id;
 		
 	private int employerEmployerId;	
 
-	private String jobPositon;
+	private short jobPositonId;
+	
+	private short cityId;
+	
+	private short workingTypeId;
+	
+	private short workingTimeId;
 
 	private String jobInfo;
-
-	private String cityInfo;
 
 	private int minExpectedSalary;
 

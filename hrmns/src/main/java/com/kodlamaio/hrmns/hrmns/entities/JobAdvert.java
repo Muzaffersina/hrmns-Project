@@ -19,22 +19,20 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "jobs")
-public class Job {
+@Table(name = "job_adverts")
+public class JobAdvert {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "job_id")
 	private int id;
 
-	@Column(name = "job_position")
-	private String jobPositon;
+	@JoinColumn(name = "job_position_id")
+	@ManyToOne
+	private JobPosition jobPosition;
 	
 	@Column(name = "job_info")
 	private String jobInfo;
-	
-	@Column(name = "city_info")
-	private String cityInfo;
 	
 	@Column(name = "min_expected_salary")
 	private int minExpectedSalary;
@@ -46,14 +44,26 @@ public class Job {
 	private int numberOfPositions;
 	
 	@Column(name = "create_date")
-	private LocalDate createDate;
+	private LocalDate createDate = LocalDate.now();
 	
 	@Column(name = "dead_line")
 	private LocalDate deadLine;
 	
 	@Column(name = "status")
 	private boolean status;
-
+	
+	@JoinColumn(name = "city_id")
+	@ManyToOne
+	private City city;	
+	
+	@JoinColumn(name = "working_time_id")
+	@ManyToOne
+	private WorkingTime workingTime;
+	
+	@JoinColumn(name = "working_type_id")
+	@ManyToOne
+	private WorkingType workingType;
+	
 	@ManyToOne()
 	@JoinColumn(name = "employer_id")
 	private Employer employer;

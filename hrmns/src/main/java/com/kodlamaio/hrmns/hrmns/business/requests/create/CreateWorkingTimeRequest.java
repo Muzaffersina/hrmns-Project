@@ -1,7 +1,7 @@
-package com.kodlamaio.hrmns.hrmns.business.requests.delete;
+package com.kodlamaio.hrmns.hrmns.business.requests.create;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DeleteJobRequest {
+public class CreateWorkingTimeRequest {
 
 	@NotNull
-	@Positive
-	private int id;
+	@Size(min = 1 )
+	private String name;
 }

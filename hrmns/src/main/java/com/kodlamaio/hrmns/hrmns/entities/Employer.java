@@ -34,5 +34,5 @@ public class Employer extends UserEntity {
 	private boolean systemWorkerValidate;
 	
 	@OneToMany(mappedBy = "employer")
-	private List<Job> jobs;
+	private List<JobAdvert> jobs;
 }

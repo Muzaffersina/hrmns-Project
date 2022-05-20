@@ -7,24 +7,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kodlamaio.hrmns.hrmns.business.abstracts.UserService;
-import com.kodlamaio.hrmns.hrmns.business.dtos.GetListUserDto;
+import com.kodlamaio.hrmns.hrmns.business.dtos.GetListUserEntityDto;
 import com.kodlamaio.hrmns.hrmns.core.adapters.email.EmailValidatonFakeService;
 import com.kodlamaio.hrmns.hrmns.core.concretes.BusinessException;
 import com.kodlamaio.hrmns.hrmns.core.mapping.ModelMapperService;
 import com.kodlamaio.hrmns.hrmns.core.results.DataResult;
 import com.kodlamaio.hrmns.hrmns.core.results.SuccessDataResult;
-import com.kodlamaio.hrmns.hrmns.dataAccess.abstracts.UserDao;
+import com.kodlamaio.hrmns.hrmns.dataAccess.abstracts.UserEntityDao;
 import com.kodlamaio.hrmns.hrmns.entities.UserEntity;
 
 @Service
 public class UserManager implements UserService {
 
-	private UserDao userDao;
+	private UserEntityDao userDao;
 	private ModelMapperService modelMapperService;
 	private EmailValidatonFakeService emailValidatonFakeService;
 
 	@Autowired
-	public UserManager(UserDao userDao, ModelMapperService modelMapperService,
+	public UserManager(UserEntityDao userDao, ModelMapperService modelMapperService,
 			EmailValidatonFakeService emailValidatonFakeService) {
 		this.userDao = userDao;
 		this.modelMapperService = modelMapperService;
@@ -32,23 +32,23 @@ public class UserManager implements UserService {
 	}
 
 	@Override
-	public DataResult<List<GetListUserDto>> getAll() {
+	public DataResult<List<GetListUserEntityDto>> getAll() {
 
 		List<UserEntity> users = this.userDao.findAll();
-		List<GetListUserDto> response = users.stream()
-				.map(user -> this.modelMapperService.forDto().map(user, GetListUserDto.class))
+		List<GetListUserEntityDto> response = users.stream()
+				.map(user -> this.modelMapperService.forDto().map(user, GetListUserEntityDto.class))
 				.collect(Collectors.toList());
 
-		return new SuccessDataResult<List<GetListUserDto>>(response, "Listed Users");
+		return new SuccessDataResult<List<GetListUserEntityDto>>(response, "Listed Users");
 	}
 
 	@Override
-	public DataResult<GetListUserDto> getByUserId(int userId) {
+	public DataResult<GetListUserEntityDto> getByUserId(int userId) {
 
 		checkIfUserIdExists(userId);
 		UserEntity user = this.userDao.getById(userId);
-		GetListUserDto response = this.modelMapperService.forDto().map(user, GetListUserDto.class);
-		return new SuccessDataResult<GetListUserDto>(response, "Listed User");
+		GetListUserEntityDto response = this.modelMapperService.forDto().map(user, GetListUserEntityDto.class);
+		return new SuccessDataResult<GetListUserEntityDto>(response, "Listed User");
 	}
 
 	private boolean checkIfUserIdExists(int id) {

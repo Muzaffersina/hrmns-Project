@@ -21,12 +21,12 @@ import com.kodlamaio.hrmns.hrmns.core.results.Result;
 
 @RestController
 @RequestMapping("/api/employers")
-public class EmployerController {
+public class EmployersController {
 
 	private EmployerService employerService;
 
 	@Autowired
-	public EmployerController(EmployerService employerService) {
+	public EmployersController(EmployerService employerService) {
 		this.employerService = employerService;
 	}
 
@@ -40,12 +40,12 @@ public class EmployerController {
 		return this.employerService.delete(deleteEmployerRequest);
 	}
 
-	@PostMapping("/getByEmployerId")
+	@GetMapping("/getByEmployerId")
 	public DataResult<GetListEmployerDto> getByEmployerId(int employerId){
 		return this.employerService.getByEmployerId(employerId);
 	}
 
-	@PostMapping("/closeJobStatus")
+	@GetMapping("/closeJobStatus")
 	public Result closeJobStatus(int employerId, int jobId) {
 		return this.employerService.closeJobStatus(employerId, jobId);
 	}
