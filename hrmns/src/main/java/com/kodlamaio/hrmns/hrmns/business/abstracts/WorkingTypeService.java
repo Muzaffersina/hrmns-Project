@@ -22,6 +22,8 @@ public interface WorkingTypeService {
 	Result delete(DeleteWorkingTypeRequest deleteWorkingTypeRequest);
 
 	Result update(UpdateWorkingTypeRequest updateWorkingTypeRequest);
+	
+	boolean checkIfWorkingTypeExists(short id);
 
 	
 

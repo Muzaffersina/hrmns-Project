@@ -39,7 +39,7 @@ public class CityManager implements CityService {
 		isCityNameExists(createCityRequest.getName());
 
 		City city = this.modelMapperService.forRequest().map(createCityRequest, City.class);
-		
+
 		this.cityDao.save(city);
 
 		return new SuccessResult("Created City");
@@ -111,7 +111,8 @@ public class CityManager implements CityService {
 		throw new BusinessException("This city name already exists");
 	}
 
-	private boolean checkIfCityIdExists(short id) {
+	@Override
+	public boolean checkIfCityIdExists(short id) {
 
 		if (this.cityDao.existsById(id)) {
 			return true;

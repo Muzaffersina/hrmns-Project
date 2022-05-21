@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.kodlamaio.hrmns.hrmns.business.abstracts.EmployerService;
 import com.kodlamaio.hrmns.hrmns.business.abstracts.JobAdvertService;
-import com.kodlamaio.hrmns.hrmns.business.abstracts.UserService;
+import com.kodlamaio.hrmns.hrmns.business.abstracts.UserEntityService;
 import com.kodlamaio.hrmns.hrmns.business.dtos.GetListEmployerDto;
 import com.kodlamaio.hrmns.hrmns.business.requests.create.CreateEmployerRequest;
 import com.kodlamaio.hrmns.hrmns.business.requests.delete.DeleteEmployerRequest;
@@ -30,13 +30,13 @@ public class EmployerManager implements EmployerService {
 
 	private EmployerDao employerDao;
 	private ModelMapperService modelMapperService;
-	private UserService userService;
+	private UserEntityService userService;
 	private JobAdvertService jobService;
 
 	@Autowired
 	@Lazy
-	public EmployerManager(EmployerDao employerDao, ModelMapperService modelMapperService, UserService userService,
-			JobAdvertService jobService) {
+	public EmployerManager(EmployerDao employerDao, ModelMapperService modelMapperService,
+			UserEntityService userService, JobAdvertService jobService) {
 		this.employerDao = employerDao;
 		this.modelMapperService = modelMapperService;
 		this.userService = userService;
@@ -134,5 +134,15 @@ public class EmployerManager implements EmployerService {
 
 	private void validateEmail(int id, boolean status) {
 		this.userService.validateEmail(id, status);
+	}
+	
+	@Override
+	public boolean checkIfValidatedEmployer(int employerId) {
+		
+		Employer employer = this.employerDao.getByEmployerIdAndSystemWorkerValidate(employerId, true);
+		if(employer != null) {
+			return true;
+		}
+		throw new BusinessException("This employer has not yet been verified by System Workers");
 	}
 }

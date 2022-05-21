@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import com.kodlamaio.hrmns.hrmns.business.abstracts.WorkingTimeService;
 import com.kodlamaio.hrmns.hrmns.business.dtos.GetListWorkingTimeDto;
-import com.kodlamaio.hrmns.hrmns.business.dtos.GetListWorkingTypeDto;
 import com.kodlamaio.hrmns.hrmns.business.requests.create.CreateWorkingTimeRequest;
 import com.kodlamaio.hrmns.hrmns.business.requests.delete.DeleteWorkingTimeRequest;
 import com.kodlamaio.hrmns.hrmns.business.requests.update.UpdateWorkingTimeRequest;
@@ -19,7 +18,6 @@ import com.kodlamaio.hrmns.hrmns.core.results.SuccessDataResult;
 import com.kodlamaio.hrmns.hrmns.core.results.SuccessResult;
 import com.kodlamaio.hrmns.hrmns.dataAccess.abstracts.WorkingTimeDao;
 import com.kodlamaio.hrmns.hrmns.entities.WorkingTime;
-import com.kodlamaio.hrmns.hrmns.entities.WorkingType;
 
 @Service
 public class WorkingTimeManager implements WorkingTimeService {
@@ -34,7 +32,8 @@ public class WorkingTimeManager implements WorkingTimeService {
 
 	@Override
 	public Result add(CreateWorkingTimeRequest createWorkingTimeRequest) {
-
+		
+		createWorkingTimeRequest.setName(toUpperCase(createWorkingTimeRequest.getName()));
 		checkIfWorkingTimeNameExists(createWorkingTimeRequest.getName());
 
 		WorkingTime workingTime = this.modelMapperService.forRequest().map(createWorkingTimeRequest, WorkingTime.class);
@@ -54,6 +53,7 @@ public class WorkingTimeManager implements WorkingTimeService {
 	@Override
 	public Result update(UpdateWorkingTimeRequest updateWorkingTimeRequest) {
 
+		updateWorkingTimeRequest.setName(toUpperCase(updateWorkingTimeRequest.getName()));
 		checkIfWorkingTimeExists(updateWorkingTimeRequest.getId());
 		return new SuccessResult("Updated Working Time");
 	}
@@ -83,7 +83,8 @@ public class WorkingTimeManager implements WorkingTimeService {
 
 	@Override
 	public DataResult<GetListWorkingTimeDto> getByWorkingTimeName(String name) {
-
+		
+		name=toUpperCase(name);
 		checkIfWorkingTimeExists(name);
 
 		WorkingTime workingTime = this.workingTimeDao.getByName(name);
@@ -93,27 +94,36 @@ public class WorkingTimeManager implements WorkingTimeService {
 	}
 
 	private boolean checkIfWorkingTimeExists(String name) {
-
+		
 		WorkingTime workingTime = this.workingTimeDao.getByName(name);
+		
 		if (workingTime != null) {
 			return true;
 		}
 		throw new BusinessException("This working time doesnt found");
 	}
 
-	private boolean checkIfWorkingTimeNameExists(String name) {
+	private boolean checkIfWorkingTimeNameExists(String name) {		
+		
 		WorkingTime workingTime = this.workingTimeDao.getByName(name);
+		
 		if (workingTime == null) {
 			return true;
 		}
 		throw new BusinessException("This working time already exists");
 	}
 
-	private boolean checkIfWorkingTimeExists(short id) {
+	@Override
+	public boolean checkIfWorkingTimeExists(short id) {
 
 		if (this.workingTimeDao.existsById(id)) {
 			return true;
 		}
 		throw new BusinessException("This working time id doesnt found");
 	}
+	
+	private String toUpperCase(String name) {
+		return name.toUpperCase();
+	}
+
 }

@@ -8,5 +8,5 @@ import com.kodlamaio.hrmns.hrmns.entities.Employer;
 @Repository
 public interface EmployerDao extends JpaRepository<Employer, Integer>{
 	
-
+	Employer getByEmployerIdAndSystemWorkerValidate(int employerId, boolean systemWorkerValidate);
 }

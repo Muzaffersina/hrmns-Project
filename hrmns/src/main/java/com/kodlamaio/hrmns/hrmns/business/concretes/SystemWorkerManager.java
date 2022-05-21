@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.kodlamaio.hrmns.hrmns.business.abstracts.EmployerService;
 import com.kodlamaio.hrmns.hrmns.business.abstracts.JobAdvertService;
 import com.kodlamaio.hrmns.hrmns.business.abstracts.SystemWorkerService;
+import com.kodlamaio.hrmns.hrmns.business.abstracts.UserEntityService;
 import com.kodlamaio.hrmns.hrmns.business.dtos.GetListSystemWorkerDto;
 import com.kodlamaio.hrmns.hrmns.business.requests.create.CreateSystemWorkerRequest;
 import com.kodlamaio.hrmns.hrmns.business.requests.delete.DeleteSystemWorkerRequest;
@@ -29,21 +30,28 @@ public class SystemWorkerManager implements SystemWorkerService {
 	private ModelMapperService modelMapperService;
 	private EmployerService employerService;
 	private JobAdvertService jobService;
+	private UserEntityService userEntityService;
 
 	@Autowired
 	public SystemWorkerManager(SystemWorkerDao systemWorkerDao, ModelMapperService modelMapperService,
-			EmployerService employerService) {
+			EmployerService employerService, UserEntityService userEntityService,JobAdvertService jobService) {
 		this.systemWorkerDao = systemWorkerDao;
 		this.modelMapperService = modelMapperService;
 		this.employerService = employerService;
-	}
+		this.userEntityService = userEntityService;
+		this.jobService = jobService;
+		}
 
 	@Override
 	public Result add(CreateSystemWorkerRequest createSystemWorkerRequest) {
 
+		checkIfEmailExists(createSystemWorkerRequest.getEmail());
+
 		SystemWorker systemWorker = this.modelMapperService.forDto().map(createSystemWorkerRequest, SystemWorker.class);
-		this.systemWorkerDao.save(systemWorker);
 		systemWorker.setRole("systemWorker");
+		systemWorker.setValidation(true);
+		this.systemWorkerDao.save(systemWorker);
+		
 
 		return new SuccessResult("Created SystemWorker");
 	}
@@ -51,7 +59,7 @@ public class SystemWorkerManager implements SystemWorkerService {
 	@Override
 	public Result delete(DeleteSystemWorkerRequest deleteSystemWorkerRequest) {
 
-		checkIfSystemWorkerId(deleteSystemWorkerRequest.getSystemWorkerId());
+		checkIfSystemWorkerIdExists(deleteSystemWorkerRequest.getSystemWorkerId());
 		this.systemWorkerDao.deleteById(deleteSystemWorkerRequest.getSystemWorkerId());
 		return new SuccessResult("Deleted SystemWorker");
 	}
@@ -59,9 +67,9 @@ public class SystemWorkerManager implements SystemWorkerService {
 	@Override
 	public Result update(UpdateSystemWorkerRequest updateSystemWorkerRequest) {
 
-		checkIfSystemWorkerId(updateSystemWorkerRequest.getSystemWorkerId());
+		checkIfSystemWorkerIdExists(updateSystemWorkerRequest.getSystemWorkerId());
 
-		return null;
+		return new SuccessResult("Updated SystemWorker");
 	}
 
 	@Override
@@ -78,7 +86,7 @@ public class SystemWorkerManager implements SystemWorkerService {
 	@Override
 	public DataResult<GetListSystemWorkerDto> getBySystemWorkerId(int systemWorkerId) {
 
-		checkIfSystemWorkerId(systemWorkerId);
+		checkIfSystemWorkerIdExists(systemWorkerId);
 
 		SystemWorker systemWorker = this.systemWorkerDao.getById(systemWorkerId);
 		GetListSystemWorkerDto response = this.modelMapperService.forDto().map(systemWorker,
@@ -95,17 +103,26 @@ public class SystemWorkerManager implements SystemWorkerService {
 
 	@Override
 	public Result jobStatusManuelChange(int jobId, boolean status) {
-		
+
 		this.jobService.jobStatusManuelChange(jobId, status);
 		return new SuccessResult("Job Status changed");
 	}
 
-	private boolean checkIfSystemWorkerId(int systemWorkerId) {
+	private boolean checkIfSystemWorkerIdExists(int systemWorkerId) {
 
 		if (this.systemWorkerDao.existsById(systemWorkerId)) {
 			return true;
 		}
 		throw new BusinessException("This systemWorker id not found");
+	}
+
+	private boolean checkIfEmailExists(String email) {
+
+		if (this.userEntityService.checkIfEmailExists(email)) {
+			return true;
+		}
+		throw new BusinessException("This email already exists");
+
 	}
 
 }

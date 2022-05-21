@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.kodlamaio.hrmns.hrmns.business.abstracts.UserService;
+import com.kodlamaio.hrmns.hrmns.business.abstracts.UserEntityService;
 import com.kodlamaio.hrmns.hrmns.business.dtos.GetListUserEntityDto;
 import com.kodlamaio.hrmns.hrmns.core.adapters.email.EmailValidatonFakeService;
 import com.kodlamaio.hrmns.hrmns.core.concretes.BusinessException;
@@ -17,14 +17,14 @@ import com.kodlamaio.hrmns.hrmns.dataAccess.abstracts.UserEntityDao;
 import com.kodlamaio.hrmns.hrmns.entities.UserEntity;
 
 @Service
-public class UserManager implements UserService {
+public class UserEntityManager implements UserEntityService {
 
 	private UserEntityDao userDao;
 	private ModelMapperService modelMapperService;
 	private EmailValidatonFakeService emailValidatonFakeService;
 
 	@Autowired
-	public UserManager(UserEntityDao userDao, ModelMapperService modelMapperService,
+	public UserEntityManager(UserEntityDao userDao, ModelMapperService modelMapperService,
 			EmailValidatonFakeService emailValidatonFakeService) {
 		this.userDao = userDao;
 		this.modelMapperService = modelMapperService;

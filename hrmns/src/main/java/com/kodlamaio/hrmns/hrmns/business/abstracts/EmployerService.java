@@ -21,4 +21,5 @@ public interface EmployerService {
 	boolean checkIfEmployerExists(int employerId);
 	void validateEmployerId(int id, boolean status);
 	Result closeJobStatus(int employerId,int jobId);
+	boolean checkIfValidatedEmployer(int employerId);
 }

@@ -15,7 +15,7 @@ public class GetListJobAdvertDto {
 		
 	private int employerEmployerId;	
 
-	private short jobPositonId;
+	private short jobPositionId;
 	
 	private short cityId;
 	

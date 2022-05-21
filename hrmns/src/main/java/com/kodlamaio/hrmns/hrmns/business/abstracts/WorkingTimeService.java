@@ -22,6 +22,8 @@ public interface WorkingTimeService {
 	Result delete(DeleteWorkingTimeRequest deleteWorkingTimeRequest);
 
 	Result update(UpdateWorkingTimeRequest updateWorkingTimeRequest);
+	
+	boolean checkIfWorkingTimeExists(short id);
 
 
 }

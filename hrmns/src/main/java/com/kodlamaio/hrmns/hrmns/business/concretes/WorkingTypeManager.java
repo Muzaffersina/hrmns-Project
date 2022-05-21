@@ -34,8 +34,10 @@ public class WorkingTypeManager implements WorkingTypeService {
 
 	@Override
 	public Result add(CreateWorkingTypeRequest createWorkingTypeRequest) {
-
+		
+		createWorkingTypeRequest.setName(toUpperCase(createWorkingTypeRequest.getName()));
 		checkIfWorkingTypeNameExists(createWorkingTypeRequest.getName());
+		
 		
 		WorkingType workingType = this.modelMapperService.forRequest().map(createWorkingTypeRequest, WorkingType.class);
 		this.workingTypeDao.save(workingType);
@@ -54,6 +56,8 @@ public class WorkingTypeManager implements WorkingTypeService {
 
 	@Override
 	public Result update(UpdateWorkingTypeRequest updateWorkingTypeRequest) {
+		
+		updateWorkingTypeRequest.setName(toUpperCase(updateWorkingTypeRequest.getName()));
 
 		checkIfWorkingTypeExists(updateWorkingTypeRequest.getId());
 		return new SuccessResult("Updated Working Type");
@@ -72,7 +76,8 @@ public class WorkingTypeManager implements WorkingTypeService {
 
 	@Override
 	public DataResult<GetListWorkingTypeDto> getByWorkingTypeName(String name) {
-
+		
+		name = toUpperCase(name);		
 		checkIfWorkingTypeExists(name);
 
 		WorkingType workingType = this.workingTypeDao.getByName(name);
@@ -93,16 +98,17 @@ public class WorkingTypeManager implements WorkingTypeService {
 	}
 
 	private boolean checkIfWorkingTypeExists(String name) {
-
+	
 		WorkingType workingType = this.workingTypeDao.getByName(name);
+		
 		if (workingType != null) {
 			return true;
 		}
 		throw new BusinessException("This working type doesnt found");
 	}
 
-	private boolean checkIfWorkingTypeNameExists(String name) {
-		
+	private boolean checkIfWorkingTypeNameExists(String name) {		
+	
 		WorkingType workingType = this.workingTypeDao.getByName(name);
 		if (workingType == null) {
 			return true;
@@ -110,13 +116,17 @@ public class WorkingTypeManager implements WorkingTypeService {
 		throw new BusinessException("This working type already exists");
 	}
 
-	private boolean checkIfWorkingTypeExists(short id) {
+	@Override
+	public boolean checkIfWorkingTypeExists(short id) {
 
 		if (this.workingTypeDao.existsById(id)) {
 			return true;
 		}
 		throw new BusinessException("This working type id doesnt found");
 	}
-
+	
+	private String toUpperCase(String name) {
+		return name.toUpperCase();
+	}
 
 }

@@ -8,8 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import com.kodlamaio.hrmns.hrmns.business.abstracts.CityService;
 import com.kodlamaio.hrmns.hrmns.business.abstracts.EmployerService;
 import com.kodlamaio.hrmns.hrmns.business.abstracts.JobAdvertService;
+import com.kodlamaio.hrmns.hrmns.business.abstracts.JobPositionService;
+import com.kodlamaio.hrmns.hrmns.business.abstracts.WorkingTimeService;
+import com.kodlamaio.hrmns.hrmns.business.abstracts.WorkingTypeService;
 import com.kodlamaio.hrmns.hrmns.business.dtos.GetListJobAdvertDto;
 import com.kodlamaio.hrmns.hrmns.business.requests.create.CreateJobAdvertRequest;
 import com.kodlamaio.hrmns.hrmns.business.requests.delete.DeleteJobAdvertRequest;
@@ -29,23 +33,43 @@ public class JobAdvertManager implements JobAdvertService {
 	private JobAdvertDao jobDao;
 	private ModelMapperService modelMapperService;
 	private EmployerService employerService;
+	private JobPositionService jobPositionService;
+	private CityService cityService;
+	private WorkingTimeService workingTimeService;
+	private WorkingTypeService workingTypeService;
+	
 
 	@Autowired
 	@Lazy
-	public JobAdvertManager(JobAdvertDao jobDao, ModelMapperService modelMapperService, EmployerService employerService) {
+	public JobAdvertManager(JobAdvertDao jobDao, ModelMapperService modelMapperService, EmployerService employerService,
+			JobPositionService jobPositionService, CityService cityService, WorkingTimeService workingTimeService,
+			WorkingTypeService workingTypeService) {
 		this.jobDao = jobDao;
 		this.modelMapperService = modelMapperService;
 		this.employerService = employerService;
+		this.jobPositionService = jobPositionService;
+		this.cityService = cityService;
+		this.workingTimeService = workingTimeService;
+		this.workingTypeService = workingTypeService;
+
 	}
 
 	@Override
 	public Result add(CreateJobAdvertRequest createJobRequest) {
 
 		this.employerService.checkIfEmployerExists(createJobRequest.getEmployerEmployerId());
+		this.employerService.checkIfValidatedEmployer(createJobRequest.getEmployerEmployerId());
+		this.jobPositionService.checkIfJobPositionExists(createJobRequest.getJobPositionId());
+		this.cityService.checkIfCityIdExists(createJobRequest.getCityId());
+		this.workingTimeService.checkIfWorkingTimeExists(createJobRequest.getWorkingTimeId());
+		this.workingTypeService.checkIfWorkingTypeExists(createJobRequest.getWorkingTypeId());
+		
+		
 		JobAdvert job = this.modelMapperService.forRequest().map(createJobRequest, JobAdvert.class);
 		job.setCreateDate(LocalDate.now());
 		job.setStatus(true);
 		job.setId(0);
+		
 		this.jobDao.save(job);
 
 		return new SuccessResult("Created Job");
@@ -88,41 +112,39 @@ public class JobAdvertManager implements JobAdvertService {
 
 		return new SuccessDataResult<List<GetListJobAdvertDto>>(response, "Listed Jobs For Employer");
 	}
-	
+
 	@Override
 	public DataResult<List<GetListJobAdvertDto>> getAllByJobStatusTrue() {
-		
+
 		List<JobAdvert> jobs = this.jobDao.getByStatus(true);
 		List<GetListJobAdvertDto> response = jobs.stream()
 				.map(job -> this.modelMapperService.forDto().map(job, GetListJobAdvertDto.class))
 				.collect(Collectors.toList());
 
-		return new SuccessDataResult<List<GetListJobAdvertDto>>(response, "Listed Jobs By Status=True");	
+		return new SuccessDataResult<List<GetListJobAdvertDto>>(response, "Listed Jobs By Status=True");
 	}
 
 	@Override
 	public DataResult<List<GetListJobAdvertDto>> getJobStatusTrueByEmployer(int employerId) {
-		
+
 		List<JobAdvert> jobs = this.jobDao.getByEmployer_EmployerIdAndStatus(employerId, true);
 		List<GetListJobAdvertDto> response = jobs.stream()
 				.map(job -> this.modelMapperService.forDto().map(job, GetListJobAdvertDto.class))
 				.collect(Collectors.toList());
 
-		return new SuccessDataResult<List<GetListJobAdvertDto>>(response, "Listed Jobs Status=True By Employer");	
+		return new SuccessDataResult<List<GetListJobAdvertDto>>(response, "Listed Jobs Status=True By Employer");
 	}
-	
 
 	@Override
 	public DataResult<List<GetListJobAdvertDto>> getAllJobStatusTrueByDate(LocalDate startDate, LocalDate endDate) {
-		
+
 		List<JobAdvert> jobs = this.jobDao.getByDeadLineBetween(startDate, endDate);
 		List<GetListJobAdvertDto> response = jobs.stream()
 				.map(job -> this.modelMapperService.forDto().map(job, GetListJobAdvertDto.class))
 				.collect(Collectors.toList());
 
-		return new SuccessDataResult<List<GetListJobAdvertDto>>(response, "Listed Jobs By DeadLine");	
+		return new SuccessDataResult<List<GetListJobAdvertDto>>(response, "Listed Jobs By DeadLine");
 	}
-
 
 	@Override
 	public void jobStatusManuelChange(int jobId, boolean status) {
@@ -161,7 +183,5 @@ public class JobAdvertManager implements JobAdvertService {
 		}
 		throw new BusinessException("This job id not found");
 	}
-
-
 
 }

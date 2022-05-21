@@ -52,7 +52,7 @@ public class SystemWorkersController {
 	
 	@GetMapping("/getBySystemWorkerId")
 	public DataResult<GetListSystemWorkerDto> getBySystemWorkerId(int systemWorkerId){
-		return this.getBySystemWorkerId(systemWorkerId);
+		return this.systemWorkerService.getBySystemWorkerId(systemWorkerId);
 	}
 
 	@GetMapping("/getAll")

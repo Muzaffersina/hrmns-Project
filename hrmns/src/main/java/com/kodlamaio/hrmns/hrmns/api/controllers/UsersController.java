@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.kodlamaio.hrmns.hrmns.business.abstracts.UserService;
+import com.kodlamaio.hrmns.hrmns.business.abstracts.UserEntityService;
 import com.kodlamaio.hrmns.hrmns.business.dtos.GetListUserEntityDto;
 import com.kodlamaio.hrmns.hrmns.core.results.DataResult;
 
@@ -16,10 +16,10 @@ import com.kodlamaio.hrmns.hrmns.core.results.DataResult;
 @RequestMapping("/api/userControllers")
 public class UsersController {
 	
-	private UserService userService;
+	private UserEntityService userService;
 	
 	@Autowired 
-	public UsersController(UserService userService) {
+	public UsersController(UserEntityService userService) {
 		this.userService = userService;
 	}
 	

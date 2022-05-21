@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kodlamaio.hrmns.hrmns.business.abstracts.PersonService;
-import com.kodlamaio.hrmns.hrmns.business.abstracts.UserService;
+import com.kodlamaio.hrmns.hrmns.business.abstracts.UserEntityService;
 import com.kodlamaio.hrmns.hrmns.business.dtos.GetListPersonDto;
 import com.kodlamaio.hrmns.hrmns.business.requests.create.CreatePersonRequest;
 import com.kodlamaio.hrmns.hrmns.business.requests.delete.DeletePersonRequest;
@@ -29,11 +29,11 @@ public class PersonManager implements PersonService {
 
 	private PersonDao personDao;
 	private ModelMapperService modelMapperService;
-	private UserService userService;
+	private UserEntityService userService;
 	private PersonCheckAdapterService personCheckAdapterService;
 	
 	@Autowired
-	public PersonManager(PersonDao personDao, ModelMapperService modelMapperService, UserService userService,
+	public PersonManager(PersonDao personDao, ModelMapperService modelMapperService, UserEntityService userService,
 			PersonCheckAdapterService personCheckAdapterService) {
 		this.personDao = personDao;
 		this.modelMapperService = modelMapperService;
@@ -50,7 +50,7 @@ public class PersonManager implements PersonService {
 		checkIfSocialSecurityNumberExists(createPersonRequest.getSocialSecurityNumber());
 
 		Person person = this.modelMapperService.forDto().map(createPersonRequest, Person.class);
-		//checkRealPersonExists(person);
+		//checkIfRealPerson(person);
 		person.setRole("person");
 		
 		this.personDao.save(person);
@@ -124,7 +124,7 @@ public class PersonManager implements PersonService {
 		throw new BusinessException("This Person id not found");
 	}
 	
-	private boolean checkRealPersonExists(Person person) {
+	private boolean checkIfRealPerson(Person person) {
 		
 		if(this.personCheckAdapterService.isPersonExist(person).isSuccess()) {
 			return true;

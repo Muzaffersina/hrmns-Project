@@ -17,5 +17,7 @@ public interface CityService {
 	DataResult<List<GetListCityDto>> getAll();
 	DataResult<GetListCityDto> getByNameCity(String name);
 	DataResult<GetListCityDto> getById(short id);
+	
+	boolean checkIfCityIdExists(short id);
 
 }
