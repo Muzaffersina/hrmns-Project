@@ -29,17 +29,17 @@ public class SystemWorkerManager implements SystemWorkerService {
 	private SystemWorkerDao systemWorkerDao;
 	private ModelMapperService modelMapperService;
 	private EmployerService employerService;
-	private JobAdvertService jobService;
+	private JobAdvertService jobAdvertService;
 	private UserEntityService userEntityService;
 
 	@Autowired
 	public SystemWorkerManager(SystemWorkerDao systemWorkerDao, ModelMapperService modelMapperService,
-			EmployerService employerService, UserEntityService userEntityService,JobAdvertService jobService) {
+			EmployerService employerService, UserEntityService userEntityService,JobAdvertService jobAdvertService) {
 		this.systemWorkerDao = systemWorkerDao;
 		this.modelMapperService = modelMapperService;
 		this.employerService = employerService;
 		this.userEntityService = userEntityService;
-		this.jobService = jobService;
+		this.jobAdvertService = jobAdvertService;
 		}
 
 	@Override
@@ -104,7 +104,7 @@ public class SystemWorkerManager implements SystemWorkerService {
 	@Override
 	public Result jobStatusManuelChange(int jobId, boolean status) {
 
-		this.jobService.jobStatusManuelChange(jobId, status);
+		this.jobAdvertService.jobStatusManuelChange(jobId, status);
 		return new SuccessResult("Job Status changed");
 	}
 

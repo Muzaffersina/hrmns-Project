@@ -19,14 +19,14 @@ import com.kodlamaio.hrmns.hrmns.entities.UserEntity;
 @Service
 public class UserEntityManager implements UserEntityService {
 
-	private UserEntityDao userDao;
+	private UserEntityDao userEntityDao;
 	private ModelMapperService modelMapperService;
 	private EmailValidatonFakeService emailValidatonFakeService;
 
 	@Autowired
-	public UserEntityManager(UserEntityDao userDao, ModelMapperService modelMapperService,
+	public UserEntityManager(UserEntityDao userEntityDao, ModelMapperService modelMapperService,
 			EmailValidatonFakeService emailValidatonFakeService) {
-		this.userDao = userDao;
+		this.userEntityDao = userEntityDao;
 		this.modelMapperService = modelMapperService;
 		this.emailValidatonFakeService = emailValidatonFakeService;
 	}
@@ -34,7 +34,7 @@ public class UserEntityManager implements UserEntityService {
 	@Override
 	public DataResult<List<GetListUserEntityDto>> getAll() {
 
-		List<UserEntity> users = this.userDao.findAll();
+		List<UserEntity> users = this.userEntityDao.findAll();
 		List<GetListUserEntityDto> response = users.stream()
 				.map(user -> this.modelMapperService.forDto().map(user, GetListUserEntityDto.class))
 				.collect(Collectors.toList());
@@ -46,14 +46,14 @@ public class UserEntityManager implements UserEntityService {
 	public DataResult<GetListUserEntityDto> getByUserId(int userId) {
 
 		checkIfUserIdExists(userId);
-		UserEntity user = this.userDao.getById(userId);
+		UserEntity user = this.userEntityDao.getById(userId);
 		GetListUserEntityDto response = this.modelMapperService.forDto().map(user, GetListUserEntityDto.class);
 		return new SuccessDataResult<GetListUserEntityDto>(response, "Listed User");
 	}
 
 	private boolean checkIfUserIdExists(int id) {
 
-		if (this.userDao.existsById(id)) {
+		if (this.userEntityDao.existsById(id)) {
 			return true;
 		}
 		throw new BusinessException("This user id not found");
@@ -62,7 +62,7 @@ public class UserEntityManager implements UserEntityService {
 	@Override
 	public boolean checkIfEmailExists(String email) {
 		
-		UserEntity user = this.userDao.getByEmail(email);
+		UserEntity user = this.userEntityDao.getByEmail(email);
 		if ( user== null) {
 			return true;
 		}
@@ -73,7 +73,7 @@ public class UserEntityManager implements UserEntityService {
 	public void validateEmail(int id, boolean status) {
 
 		checkIfUserIdExists(id);
-		UserEntity user = this.userDao.getById(id);
+		UserEntity user = this.userEntityDao.getById(id);
 		this.emailValidatonFakeService.fakeEmailValidation(user, status);
 	}
 }

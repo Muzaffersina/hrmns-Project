@@ -29,15 +29,15 @@ public class PersonManager implements PersonService {
 
 	private PersonDao personDao;
 	private ModelMapperService modelMapperService;
-	private UserEntityService userService;
+	private UserEntityService userEntityService;
 	private PersonCheckAdapterService personCheckAdapterService;
 	
 	@Autowired
-	public PersonManager(PersonDao personDao, ModelMapperService modelMapperService, UserEntityService userService,
+	public PersonManager(PersonDao personDao, ModelMapperService modelMapperService, UserEntityService userEntityService,
 			PersonCheckAdapterService personCheckAdapterService) {
 		this.personDao = personDao;
 		this.modelMapperService = modelMapperService;
-		this.userService = userService;
+		this.userEntityService = userEntityService;
 		this.personCheckAdapterService = personCheckAdapterService;
 
 	}
@@ -98,7 +98,7 @@ public class PersonManager implements PersonService {
 
 	private boolean checkIfEmailExists(String email) {
 
-		if (this.userService.checkIfEmailExists(email)) {
+		if (this.userEntityService.checkIfEmailExists(email)) {
 			return true;
 		}
 		throw new BusinessException("This email already exists");
@@ -113,7 +113,7 @@ public class PersonManager implements PersonService {
 	}
 
 	private void validateEmail(int id, boolean status) {
-		this.userService.validateEmail(id, status);
+		this.userEntityService.validateEmail(id, status);
 	}
 	
 	private boolean checkIfPersonExists(int id) {

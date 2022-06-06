@@ -30,17 +30,17 @@ public class EmployerManager implements EmployerService {
 
 	private EmployerDao employerDao;
 	private ModelMapperService modelMapperService;
-	private UserEntityService userService;
-	private JobAdvertService jobService;
+	private UserEntityService userEntityService;
+	private JobAdvertService jobAdvertService;
 
 	@Autowired
 	@Lazy
 	public EmployerManager(EmployerDao employerDao, ModelMapperService modelMapperService,
-			UserEntityService userService, JobAdvertService jobService) {
+			UserEntityService userEntityService, JobAdvertService jobAdvertService) {
 		this.employerDao = employerDao;
 		this.modelMapperService = modelMapperService;
-		this.userService = userService;
-		this.jobService = jobService;
+		this.userEntityService = userEntityService;
+		this.jobAdvertService = jobAdvertService;
 	}
 
 	@Override
@@ -110,13 +110,13 @@ public class EmployerManager implements EmployerService {
 	@Override
 	public Result closeJobStatus(int employerId, int jobId) {
 
-		this.jobService.closeJobStatusByEmployer(employerId, jobId, false);
+		this.jobAdvertService.closeJobStatusByEmployer(employerId, jobId, false);
 		return new SuccessResult("This job has been closed");
 	}
 
 	private boolean checkIfEmailExists(String email) {
 
-		if (this.userService.checkIfEmailExists(email)) {
+		if (this.userEntityService.checkIfEmailExists(email)) {
 			return true;
 		}
 		throw new BusinessException("This email already exists");
@@ -133,7 +133,7 @@ public class EmployerManager implements EmployerService {
 	}
 
 	private void validateEmail(int id, boolean status) {
-		this.userService.validateEmail(id, status);
+		this.userEntityService.validateEmail(id, status);
 	}
 	
 	@Override

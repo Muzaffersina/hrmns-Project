@@ -30,7 +30,7 @@ import com.kodlamaio.hrmns.hrmns.entities.JobAdvert;
 @Service
 public class JobAdvertManager implements JobAdvertService {
 
-	private JobAdvertDao jobDao;
+	private JobAdvertDao jobAdvertDao;
 	private ModelMapperService modelMapperService;
 	private EmployerService employerService;
 	private JobPositionService jobPositionService;
@@ -41,10 +41,10 @@ public class JobAdvertManager implements JobAdvertService {
 
 	@Autowired
 	@Lazy
-	public JobAdvertManager(JobAdvertDao jobDao, ModelMapperService modelMapperService, EmployerService employerService,
+	public JobAdvertManager(JobAdvertDao jobAdvertDao, ModelMapperService modelMapperService, EmployerService employerService,
 			JobPositionService jobPositionService, CityService cityService, WorkingTimeService workingTimeService,
 			WorkingTypeService workingTypeService) {
-		this.jobDao = jobDao;
+		this.jobAdvertDao = jobAdvertDao;
 		this.modelMapperService = modelMapperService;
 		this.employerService = employerService;
 		this.jobPositionService = jobPositionService;
@@ -70,7 +70,7 @@ public class JobAdvertManager implements JobAdvertService {
 		job.setStatus(true);
 		job.setId(0);
 		
-		this.jobDao.save(job);
+		this.jobAdvertDao.save(job);
 
 		return new SuccessResult("Created Job");
 
@@ -80,7 +80,7 @@ public class JobAdvertManager implements JobAdvertService {
 	public Result delete(DeleteJobAdvertRequest deleteJobRequest) {
 
 		checkIfJobExists(deleteJobRequest.getId());
-		this.jobDao.deleteById(deleteJobRequest.getId());
+		this.jobAdvertDao.deleteById(deleteJobRequest.getId());
 		return new SuccessResult("Deleted Job");
 	}
 
@@ -93,7 +93,7 @@ public class JobAdvertManager implements JobAdvertService {
 	@Override
 	public DataResult<List<GetListJobAdvertDto>> getAll() {
 
-		List<JobAdvert> jobs = this.jobDao.findAll();
+		List<JobAdvert> jobs = this.jobAdvertDao.findAll();
 		List<GetListJobAdvertDto> response = jobs.stream()
 				.map(job -> this.modelMapperService.forDto().map(job, GetListJobAdvertDto.class))
 				.collect(Collectors.toList());
@@ -105,7 +105,7 @@ public class JobAdvertManager implements JobAdvertService {
 	public DataResult<List<GetListJobAdvertDto>> getByEmployerId(int employerId) {
 
 		this.employerService.checkIfEmployerExists(employerId);
-		List<JobAdvert> jobs = this.jobDao.getByEmployer_EmployerId(employerId);
+		List<JobAdvert> jobs = this.jobAdvertDao.getByEmployer_EmployerId(employerId);
 		List<GetListJobAdvertDto> response = jobs.stream()
 				.map(job -> this.modelMapperService.forDto().map(job, GetListJobAdvertDto.class))
 				.collect(Collectors.toList());
@@ -116,7 +116,7 @@ public class JobAdvertManager implements JobAdvertService {
 	@Override
 	public DataResult<List<GetListJobAdvertDto>> getAllByJobStatusTrue() {
 
-		List<JobAdvert> jobs = this.jobDao.getByStatus(true);
+		List<JobAdvert> jobs = this.jobAdvertDao.getByStatus(true);
 		List<GetListJobAdvertDto> response = jobs.stream()
 				.map(job -> this.modelMapperService.forDto().map(job, GetListJobAdvertDto.class))
 				.collect(Collectors.toList());
@@ -127,7 +127,7 @@ public class JobAdvertManager implements JobAdvertService {
 	@Override
 	public DataResult<List<GetListJobAdvertDto>> getJobStatusTrueByEmployer(int employerId) {
 
-		List<JobAdvert> jobs = this.jobDao.getByEmployer_EmployerIdAndStatus(employerId, true);
+		List<JobAdvert> jobs = this.jobAdvertDao.getByEmployer_EmployerIdAndStatus(employerId, true);
 		List<GetListJobAdvertDto> response = jobs.stream()
 				.map(job -> this.modelMapperService.forDto().map(job, GetListJobAdvertDto.class))
 				.collect(Collectors.toList());
@@ -138,7 +138,7 @@ public class JobAdvertManager implements JobAdvertService {
 	@Override
 	public DataResult<List<GetListJobAdvertDto>> getAllJobStatusTrueByDate(LocalDate startDate, LocalDate endDate) {
 
-		List<JobAdvert> jobs = this.jobDao.getByDeadLineBetween(startDate, endDate);
+		List<JobAdvert> jobs = this.jobAdvertDao.getByDeadLineBetween(startDate, endDate);
 		List<GetListJobAdvertDto> response = jobs.stream()
 				.map(job -> this.modelMapperService.forDto().map(job, GetListJobAdvertDto.class))
 				.collect(Collectors.toList());
@@ -150,9 +150,9 @@ public class JobAdvertManager implements JobAdvertService {
 	public void jobStatusManuelChange(int jobId, boolean status) {
 
 		checkIfJobExists(jobId);
-		JobAdvert job = this.jobDao.getById(jobId);
+		JobAdvert job = this.jobAdvertDao.getById(jobId);
 		job.setStatus(status);
-		this.jobDao.save(job);
+		this.jobAdvertDao.save(job);
 
 	}
 
@@ -162,13 +162,13 @@ public class JobAdvertManager implements JobAdvertService {
 		this.employerService.checkIfEmployerExists(employerId);
 		checkIfJobExists(jobId);
 
-		List<JobAdvert> jobs = this.jobDao.getByEmployer_EmployerId(employerId);
+		List<JobAdvert> jobs = this.jobAdvertDao.getByEmployer_EmployerId(employerId);
 		for (JobAdvert job : jobs) {
 			if (job.getEmployer().getEmployerId() == employerId) {
 
 				if (job.isStatus() == true) {
 					job.setStatus(false);
-					this.jobDao.save(job);
+					this.jobAdvertDao.save(job);
 				}
 			}
 		}
@@ -178,7 +178,7 @@ public class JobAdvertManager implements JobAdvertService {
 
 	private boolean checkIfJobExists(int id) {
 
-		if (this.jobDao.existsById(id)) {
+		if (this.jobAdvertDao.existsById(id)) {
 			return true;
 		}
 		throw new BusinessException("This job id not found");
